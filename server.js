@@ -30,11 +30,23 @@ app.set("view engine", "handlebars");
 // Have every request go through our route middleware
 app.use(routes);
 
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
-// Connect to the Mongo DB
-mongoose.connect(MONGODB_URI);
+// Connect to Mongo with if for deployed
+if (process.env.NODE_ENV === "production") {
+  mongoose.connect(
+    process.env.MONGODB_URI ||  "mongodb://<dbuser>:<dbpassword>@ds263927.mlab.com:63927/heroku_89w0jbm8",
+    {
+      useCreateIndex: true,
+      useNewUrlParser: true
+    }
+  );
+}
+else mongoose.connect(
+  process.env.MONGODB_URI ||  "mongodb://localhost/mongoHeadlines",
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true
+  }
+);
 
 // Listen on the port
 app.listen(PORT, function() {
